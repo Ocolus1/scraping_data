@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Pawo Industrie first search engine">
+    <meta name="keywords" content="Monster Job,Search,pawo industries">
+    <meta name="author" content="Paul Awolesi">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/9846bd7163.js" crossorigin="anonymous"></script>
+
+    <title>Pawo Industries Job Search</title>
+</head>
+<style type="text/css">
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        background-color: #F9B3D1;
+    }
+
+    nav {
+        background-color: #2F1847;
+        font-family: DroidSerif;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    .navbar-brand {
+        font-size: 150%;
+        font-weight: 700;
+        margin-left: 10rem;
+    }
+
+    #search {
+        padding: .8rem 1.5rem;
+        background-color: #D63AF9;
+    }
+
+    #keyword, #location {
+        border: 2px solid #f0f0f0;
+        border-left: none;
+        background-color: transparent;
+    }
+    
+    .input-group-text {
+        border: 2px solid #f0f0f0;
+        border-right: none;
+        background-color: transparent;
+    }
+
+    i {
+        /*color: aqua;*/
+        color: #D63AF9;
+    }
+
+    #resultContainer {
+        padding: 5rem 1rem;
+    }
+    table {
+        color: white;
+        background-color: #2F1847;
+        
+    }
+
+    th, td {
+        /*border: 2px solid aqua;*/
+        border: 2px solid #C62E65;
+    }
+
+    th {
+        font-size: 150%;
+        font-weight: 600;
+    }
+    
+    @media screen and (max-width: 1042px) {
+        .navbar-brand {
+            margin-left: 6rem;
+        }
+    }
+
+    @media screen and (max-width: 992px) {
+        .navbar-brand {
+            font-size: 150%;
+            font-weight: 700;
+            margin-left: 4.5rem;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .navbar-brand {
+            font-size: 130%;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        .input-group {
+            margin: 1rem;
+        }
+    }
+    
+</style>
+<body>
+    {% if e %} An {{e}} error occurred {% else%}
+    <!-- the navvigation bar  -->
+    <nav class=" navbar-expand-lg navbar navbar-dark py-4">
+        <a class="navbar-brand" href="#">Pawo Industries</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            
+            <form class="form-inline my-2 my-lg-0 m-auto" name="fname" method="POST" action="{{ url_for('home')}}">
+                <div class="input-group searchBox">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input class="form-control mr-sm-2 py-4" type="text" name="keyword" id="keyword" placeholder="Keyword or Title"
+                        aria-label="Search">
+                </div>
+                <div class="input-group searchBox">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-location-arrow"></i></span>
+                    </div>
+                    <input class="form-control mr-sm-2 py-4" type="text" name="location" id="location" placeholder="Location"
+                        aria-label="Search">
+                </div>
+                <div class="input-group">
+                    <button class="btn my-0 my-sm-0" id="search" onsubmit="return validateForm()" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </nav>
+    <section id="resultContainer">
+        <div class="container">
+            <table class="table  text-white">
+                <thead class="">
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Location</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job_elem in job_elems %}
+                    
+                    <tr>
+                        
+                        <td>
+                            <p>{% if (job_elem.find('h2', class_='title')) is not none %}
+                                <a href="{{ job_elem.find('a')['href']}}" class="text-white" target="_blank">
+                                    {{ job_elem.find('h2', class_='title').text.strip() }}
+                                </a>
+                                {% else %}{% endif %}
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                {% if (job_elem.find('div', class_='company')) is not none %}
+                                <a href="{{ job_elem.find('a')['href']}}" class="text-white" target="_blank">
+                                    {{ job_elem.find('div', class_='company').text.strip() }}
+                                </a>
+                                {% else %} {% endif %}
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                {% if (job_elem.find('div', class_='location')) is not none %}
+                                <a href="{{ job_elem.find('a')['href']}}" class="text-white" target="_blank">
+                                    {{ job_elem.find('div', class_='location').text.strip() }}
+                                </a>
+                                {% else %}{% endif %}
+                            </p>
+                        </td>
+                        <td>
+                            {% if (job_elem.find('time')) is not none %}
+                            <a href="{{ job_elem.find('a')['href']}}" class="text-white" target="_blank">
+                                {{ job_elem.find('time').text.strip() }}
+                            </a>
+                            {% else %} {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% endif %}
+    <!-- Optional JavaScript -->
+    
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function validateForm() {
+            var x = document.forms["fname"]["keyword"].value;
+            var y = document.forms["fname"]["location"].value;
+            if (x == "" || y == "") {
+                alert("This must be filled out");
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>
